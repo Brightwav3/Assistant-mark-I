@@ -63,7 +63,7 @@ Every directory below is a git submodule pointing at a standalone repository.
 
 The cores have **zero imports between each other**. The only component that knows
 about more than one core is `assistant-runtime`, which composes them behind typed
-adapters.
+adapters and hosts them as components inside `core-runtime`.
 
 ## Planned structure
 
@@ -83,7 +83,7 @@ major layer begins.
 | `memory-core` | Deliberate long-term knowledge. What is remembered is a decision, not a side effect. | durable store, retrieval, summaries |
 | `state-core` | Current facts, not history. Provenance, freshness, confidence, revision protection, subscriptions. | snapshots, TTL freshness, subscriptions, context adapter |
 | `device-network` | Physical endpoints as first-class citizens. Microphones, speakers, displays, and sensors exist independently of the core. | typed protocol, registry, WebSocket transport, authentication, liveness, simulator |
-| `assistant-runtime` | The composition root. The only component that knows about more than one core. | interaction lifecycle, typed adapters, conversation memory |
+| `assistant-runtime` | The composition root. The only component that knows about more than one core. Hosts every core as a component inside `core-runtime`. | interaction lifecycle, typed adapters, conversation memory |
 
 ### Planned
 
