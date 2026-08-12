@@ -158,11 +158,20 @@ stopped playback immediately, it wrote a summary of the conversation to SQLite,
 the interaction timed out on its own, and after a restart it still knew what had
 been said.
 
+The model can also act. Gemini requests a tool, Tool System validates the
+arguments, consults policy, applies its guards, and launches the process through
+a broker that accepts an argv array and has no shell entry point. A denied tool
+reaches nothing, a hallucinated argument is rejected before any launch, an
+approval flag invented by the model is an undeclared argument rather than a
+permission, and content returned from outside is labelled as data rather than
+instruction. Every one of those is a test, not an intention.
+
 Every core is also verified automatically on each push, and the meta-repository
 builds them all and re-runs the composed slice.
 
-Not yet verified on hardware: the modular Scribe → Intelligence → Voice path.
-Every result above came from the native realtime path.
+Not yet verified on hardware: the modular Scribe → Intelligence → Voice path,
+and the tool loop above. Every hardware result came from the native realtime
+path; the tool loop is verified end to end against a scripted provider.
 
 Each core repository documents its own verified state and known limitations in its
 `README.md` and `PROGRESS.md`.
