@@ -129,7 +129,16 @@ git clone --recurse-submodules https://github.com/Brightwav3/Assistant-mark-I.gi
 
 `--recurse-submodules` is required; without it the core directories are empty.
 
-To verify the assembled slice:
+Every core publishes its public entry from `dist/`, so the cores are built before
+the composition can resolve them:
+
+```bash
+for dir in core-runtime activation-core intelligence-core memory-core state-core            "speech-system/realtime core" "speech-system/scribe core" "speech-system/voice core"; do
+  (cd "$dir" && npm install && npm run build)
+done
+```
+
+Then verify the assembled slice:
 
 ```bash
 cd assistant-runtime && npm install && npm run verify
