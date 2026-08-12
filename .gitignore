@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.log
+.runtime/
+
+# Local-only working documents (not published)
+README AGENTS.md
+docs/superpowers/
+manifesto/
