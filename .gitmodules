@@ -1,11 +1,11 @@
 [submodule "activation-core"]
 	path = activation-core
 	url = https://github.com/Brightwav3/activation-core.git
-	branch = master
+	branch = main
 [submodule "activation-gemini-bridge"]
 	path = activation-gemini-bridge
 	url = https://github.com/Brightwav3/activation-gemini-bridge.git
-	branch = master
+	branch = main
 [submodule "assistant-runtime"]
 	path = assistant-runtime
 	url = https://github.com/Brightwav3/assistant-runtime.git
@@ -17,19 +17,19 @@
 [submodule "device-network"]
 	path = device-network
 	url = https://github.com/Brightwav3/jarvis-device-network.git
-	branch = master
+	branch = main
 [submodule "intelligence-core"]
 	path = intelligence-core
 	url = https://github.com/Brightwav3/intelligence-core.git
-	branch = master
+	branch = main
 [submodule "memory-core"]
 	path = memory-core
 	url = https://github.com/Brightwav3/memory-core.git
-	branch = implementation
+	branch = main
 [submodule "speech-system"]
 	path = speech-system
 	url = https://github.com/Brightwav3/Jarvis-speech-system.git
-	branch = agent/realtime-core
+	branch = main
 [submodule "state-core"]
 	path = state-core
 	url = https://github.com/Brightwav3/state-core.git
