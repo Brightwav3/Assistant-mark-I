@@ -34,3 +34,7 @@
 	path = state-core
 	url = https://github.com/Brightwav3/state-core.git
 	branch = main
+[submodule "tool-system"]
+	path = tool-system
+	url = https://github.com/Brightwav3/tool-system.git
+	branch = main

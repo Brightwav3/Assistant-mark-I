@@ -58,6 +58,7 @@ Every directory below is a git submodule pointing at a standalone repository.
 | [`memory-core`](./memory-core) | deliberate durable memory and retrieval | v0.1 complete |
 | [`state-core`](./state-core) | current state, freshness, revisions, subscriptions | v0.1 complete |
 | [`device-network`](./device-network) | protocol, registry, WebSocket transport, liveness, commands | v0.1 complete |
+| [`tool-system`](./tool-system) | declared capabilities, brokered execution, policy enforcement point | v0.1 complete |
 | [`assistant-runtime`](./assistant-runtime) | cross-core composition and interaction lifecycle | usable v0.1, hardening in progress |
 | [`activation-gemini-bridge`](./activation-gemini-bridge) | temporary activation-to-realtime bridge | temporary |
 
@@ -67,45 +68,49 @@ adapters and hosts them as components inside `core-runtime`.
 
 ## Planned structure
 
-The nine repositories above are the beginning, not the shape. Below is the full set
+The ten repositories above are the beginning, not the shape. Below is the full set
 of cores the system is planned to consist of, and what each one owns. Cores are
 added one at a time — each must produce a real, testable capability before the next
 major layer begins.
 
-### Built
+### Cores
 
-| Core | What it is | Subsystems |
+| | Core | What it owns |
 | --- | --- | --- |
-| `core-runtime` | The nervous system. Component lifecycle, configuration, structured logging, local API, health aggregation, clean shutdown. Exists and runs with no AI present. | event bus, component registry, local JSON API, health, logger |
-| `activation-core` | Decides when the assistant is being addressed. Provider-independent detection, emits activation events and PCM frames. | activation providers, Windows listener |
-| `speech-system` | Everything between air and text, and back. | **Scribe Core** (wake word, VAD, streaming STT), **Voice Core** (TTS, controlled local playback), **Realtime Core** (persistent native-audio sessions, barge-in hard stop) |
-| `intelligence-core` | Makes the model a replaceable component. Provider-neutral model contracts, context assembly, policy-gated tool loop, production routing. | model gateway, context assembly, action boundary, Gemini REST adapter |
-| `memory-core` | Deliberate long-term knowledge. What is remembered is a decision, not a side effect. | durable store, retrieval, summaries |
-| `state-core` | Current facts, not history. Provenance, freshness, confidence, revision protection, subscriptions. | snapshots, TTL freshness, subscriptions, context adapter |
-| `device-network` | Physical endpoints as first-class citizens. Microphones, speakers, displays, and sensors exist independently of the core. | typed protocol, registry, WebSocket transport, authentication, liveness, simulator |
-| `assistant-runtime` | The composition root. The only component that knows about more than one core. Hosts every core as a component inside `core-runtime`. | interaction lifecycle, typed adapters, conversation memory |
+| ✅ | Brain Core | Lifecycle, component registry, health, the base runtime and orchestration. |
+| ✅ | Activation Core | Activation by wake phrase, clap, external trigger, and similar signals. |
+| ✅ | Intelligence Core | Model gateway, context, action loop, routing, and model-independent inference. |
+| ✅ | Memory Core | Long-term structured memory with provenance, confidence, and update/forget semantics. |
+| ✅ | State Core | Current state of the system and the world: devices, active interactions, freshness, TTL, snapshots. |
+| ✅ | Scribe Core | Audio and microphone input → STT → transcript. |
+| ✅ | Voice Core | Text → TTS → audio playback. |
+| ✅ | Realtime Core | Persistent native-audio sessions of the Gemini Live kind, audio ⇄ model. |
+| ❌ | Interaction Core | Coordination of conversational flow between the speech subsystems, if it turns out to be needed. |
+| ❌ | Event Core | Central cross-system event infrastructure. |
+| ❌ | Context Core | Broader environmental and user context across systems. |
+| ❌ | Security Core | Authority, permissions, trust boundaries, and policy. |
+| ❌ | Task Core | Long-running, persistent work independent of any single conversation. |
+| ❌ | Automation Core | Deterministic trigger → conditions → action workflows with no AI involved. |
+| ❌ | Presence Core | Where the user is, with confidence and room-level presence. |
 
-### Planned
+### Beyond the cores
 
-| Core | What it is |
-| --- | --- |
-| `interaction-core` | Turn-taking and conversation shape as an explicit subsystem of the speech system, plus full acoustic echo cancellation. Currently the largest gap in the voice path. |
-| `agent-runtime` | The tool-calling loop. Context, model, tool, result, answer — with iteration limits, timeouts, cancellation, structured errors, and execution tracing. |
-| `policy-core` | Enforceable capability boundaries. The model may request actions; this decides whether they happen. The model cannot bypass it. |
-| `environment-core` | A bridge to mature smart-home infrastructure, so the assistant reasons over "this room" and "the front door" instead of raw entity identifiers. |
-| `display-core` | Structured visual output. A spoken request can produce something to look at without opening an application. |
-| `automation-core` | Deterministic triggers, conditions, and actions that run without any AI involvement. |
-| `proactivity-core` | Turns selected events into candidate interruptions. The step from reactive software to an ambient assistant. |
-| `model-router` | Routes each task by complexity, latency, privacy, availability, context size, and cost. Cheapest adequate intelligence by default, not the most expensive one. |
-| `task-core` | Background work that outlives the conversation and the device it started on. |
-| `tool-registry` | Digital capabilities behind stable, agent-native contracts — plus an SDK so new capabilities are plugins, not architectural changes. |
-| `presence-core` | Multi-room presence and environmental context, so interaction follows the user while respecting privacy and uncertainty. |
+| | Component | What it owns |
+| --- | --- | --- |
+| ✅ | Device Network | Communication with devices and future room satellites. |
+| ✅ | Assistant Runtime | Composes every independent core into one running assistant. |
+| ✅ | Tool System | Agent-native capabilities and tools. |
+| ❌ | Display System | Structured visual output. |
+| ❌ | Home Bridge | Integration with Home Assistant and smart-home infrastructure. |
+| ❌ | Apple Bridge | Calendar, Mail, Contacts, Reminders, and related services. |
+| ❌ | Internet Gateway | A separate internet-facing trust zone. |
+| ❌ | Room Satellite | A physical microphone, speaker, display, and sensor endpoint. |
+| ❌ | Control Center | Administration, diagnostics, and configuration. |
 
-Two concerns are deliberately **not** cores, because they are properties of every
-core rather than a place in the system: **reliability** (failures degrade
-predictably instead of collapsing) and **security** (authentication, network
-isolation, secrets, tool permissions, prompt injection, audit logs, memory privacy,
-device spoofing, microphone isolation).
+Reliability is deliberately **not** a core, because it is a property of every core
+rather than a place in the system: failures degrade predictably instead of
+collapsing. Security is the exception — authority, permissions, and trust
+boundaries are enforceable only if something owns them, so Security Core is a core.
 
 The list has no end state by design. The goal is not to build everything that can be
 imagined — it is to avoid making any of it unnecessarily difficult later.
@@ -116,7 +121,7 @@ A submodule reference is a pinned commit, not a copy. That gives three propertie
 worth the small amount of ceremony:
 
 1. Each core stays clonable, buildable, and releasable on its own.
-2. One commit in this repository records a combination of nine cores that is known
+2. One commit in this repository records a combination of ten repositories that is known
    to work together.
 3. There is exactly one source of truth per core. Nothing is duplicated, so nothing
    can drift.
@@ -133,7 +138,7 @@ Every core publishes its public entry from `dist/`, so the cores are built befor
 the composition can resolve them:
 
 ```bash
-for dir in core-runtime activation-core intelligence-core memory-core state-core            "speech-system/realtime core" "speech-system/scribe core" "speech-system/voice core"; do
+for dir in core-runtime activation-core intelligence-core memory-core state-core tool-system            "speech-system/realtime core" "speech-system/scribe core" "speech-system/voice core"; do
   (cd "$dir" && npm install && npm run build)
 done
 ```
@@ -154,7 +159,7 @@ the interaction timed out on its own, and after a restart it still knew what had
 been said.
 
 Every core is also verified automatically on each push, and the meta-repository
-builds all nine and re-runs the composed slice.
+builds them all and re-runs the composed slice.
 
 Not yet verified on hardware: the modular Scribe → Intelligence → Voice path.
 Every result above came from the native realtime path.
