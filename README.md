@@ -59,7 +59,7 @@ Every directory below is a git submodule pointing at a standalone repository.
 | [`state-core`](./state-core) | current state, freshness, revisions, subscriptions | v0.1 complete |
 | [`device-network`](./device-network) | protocol, registry, WebSocket transport, liveness, commands | v0.1 complete |
 | [`assistant-runtime`](./assistant-runtime) | cross-core composition and interaction lifecycle | usable v0.1, hardening in progress |
-| [`activation-gemini-bridge`](./activation-gemini-bridge) | temporary activation-to-realtime bridge | temporary, private |
+| [`activation-gemini-bridge`](./activation-gemini-bridge) | temporary activation-to-realtime bridge | temporary |
 
 The cores have **zero imports between each other**. The only component that knows
 about more than one core is `assistant-runtime`, which composes them behind typed
@@ -128,8 +128,6 @@ git clone --recurse-submodules https://github.com/Brightwav3/Assistant-mark-I.gi
 ```
 
 `--recurse-submodules` is required; without it the core directories are empty.
-One submodule (`activation-gemini-bridge`) is currently private and will be skipped
-unless you have access.
 
 To verify the assembled slice:
 
