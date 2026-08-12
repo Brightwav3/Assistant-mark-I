@@ -58,7 +58,8 @@ Every directory below is a git submodule pointing at a standalone repository.
 | [`memory-core`](./memory-core) | deliberate durable memory and retrieval | v0.1 complete |
 | [`state-core`](./state-core) | current state, freshness, revisions, subscriptions | v0.1 complete |
 | [`device-network`](./device-network) | protocol, registry, WebSocket transport, liveness, commands | v0.1 complete |
-| [`tool-system`](./tool-system) | declared capabilities, brokered execution, policy enforcement point | v0.1 complete |
+| [`tool-system`](./tool-system) | the tool contract, brokered execution, policy enforcement point | v0.1 complete |
+| [`host-tools`](./host-tools) | the capability catalogue declared against that contract | v0.1 complete |
 | [`assistant-runtime`](./assistant-runtime) | cross-core composition and interaction lifecycle | usable v0.1, hardening in progress |
 | [`activation-gemini-bridge`](./activation-gemini-bridge) | temporary activation-to-realtime bridge | temporary |
 
@@ -68,7 +69,7 @@ adapters and hosts them as components inside `core-runtime`.
 
 ## Planned structure
 
-The ten repositories above are the beginning, not the shape. Below is the full set
+The eleven repositories above are the beginning, not the shape. Below is the full set
 of cores the system is planned to consist of, and what each one owns. Cores are
 added one at a time — each must produce a real, testable capability before the next
 major layer begins.
@@ -99,7 +100,8 @@ major layer begins.
 | --- | --- | --- |
 | ✅ | Device Network | Communication with devices and future room satellites. |
 | ✅ | Assistant Runtime | Composes every independent core into one running assistant. |
-| ✅ | Tool System | Agent-native capabilities and tools. |
+| ✅ | Tool System | The tool contract: declaration, validation, guards, brokered execution, policy enforcement point. |
+| ✅ | Host Tools | The capability catalogue: what the assistant can actually do on a machine. |
 | ❌ | Display System | Structured visual output. |
 | ❌ | Home Bridge | Integration with Home Assistant and smart-home infrastructure. |
 | ❌ | Apple Bridge | Calendar, Mail, Contacts, Reminders, and related services. |
@@ -121,7 +123,7 @@ A submodule reference is a pinned commit, not a copy. That gives three propertie
 worth the small amount of ceremony:
 
 1. Each core stays clonable, buildable, and releasable on its own.
-2. One commit in this repository records a combination of ten repositories that is known
+2. One commit in this repository records a combination of eleven repositories that is known
    to work together.
 3. There is exactly one source of truth per core. Nothing is duplicated, so nothing
    can drift.
@@ -138,7 +140,7 @@ Every core publishes its public entry from `dist/`, so the cores are built befor
 the composition can resolve them:
 
 ```bash
-for dir in core-runtime activation-core intelligence-core memory-core state-core tool-system            "speech-system/realtime core" "speech-system/scribe core" "speech-system/voice core"; do
+for dir in core-runtime activation-core intelligence-core memory-core state-core tool-system host-tools            "speech-system/realtime core" "speech-system/scribe core" "speech-system/voice core"; do
   (cd "$dir" && npm install && npm run build)
 done
 ```

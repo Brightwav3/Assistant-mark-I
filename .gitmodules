@@ -38,3 +38,7 @@
 	path = tool-system
 	url = https://github.com/Brightwav3/tool-system.git
 	branch = main
+[submodule "host-tools"]
+	path = host-tools
+	url = https://github.com/Brightwav3/host-tools.git
+	branch = main
