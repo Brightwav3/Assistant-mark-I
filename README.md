@@ -146,10 +146,18 @@ cd assistant-runtime && npm install && npm run verify
 
 ## Current state
 
-The first usable slice runs today: double-clap activation, Gemini Live native audio,
-microphone routing, barge-in cancellation, conversation summaries persisted to
-SQLite that survive a restart, inactivity timeout, and safe shutdown. It is verified
-by 15 passing tests plus typecheck and build.
+The first usable slice runs today, and it has been used: on 2026-08-12 the native
+path was verified end to end on real hardware — a double clap activated the
+assistant, a Gemini Live session started, it answered out loud, interrupting it
+stopped playback immediately, it wrote a summary of the conversation to SQLite,
+the interaction timed out on its own, and after a restart it still knew what had
+been said.
+
+Every core is also verified automatically on each push, and the meta-repository
+builds all nine and re-runs the composed slice.
+
+Not yet verified on hardware: the modular Scribe → Intelligence → Voice path.
+Every result above came from the native realtime path.
 
 Each core repository documents its own verified state and known limitations in its
 `README.md` and `PROGRESS.md`.
