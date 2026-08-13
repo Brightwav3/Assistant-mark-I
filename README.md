@@ -60,7 +60,7 @@ Every directory below is a git submodule pointing at a standalone repository.
 | [`device-network`](./device-network) | protocol, registry, WebSocket transport, liveness, commands | v0.1 complete |
 | [`tool-system`](./tool-system) | the tool contract, brokered execution, policy enforcement point | v0.1 complete |
 | [`host-tools`](./host-tools) | the capability catalogue declared against that contract | v0.1 complete |
-| [`assistant-runtime`](./assistant-runtime) | cross-core composition and interaction lifecycle | usable v0.1, hardening in progress |
+| [`assistant-runtime`](./assistant-runtime) | cross-core composition, interaction lifecycle, realtime tools, and operator diagnostics | **Mark I complete** — native realtime slice verified on hardware; modular path deferred |
 | [`activation-gemini-bridge`](./activation-gemini-bridge) | temporary activation-to-realtime bridge | temporary |
 
 The cores have **zero imports between each other**. The only component that knows
@@ -153,16 +153,19 @@ cd assistant-runtime && npm install && npm run verify
 
 ## Current state
 
-The first usable slice runs today, and it has been used: on 2026-08-12 the native
+The first usable slice runs today, and it has been used: on 2026-08-13 the native
 path was verified end to end on real hardware — a double clap activated the
 assistant, a Gemini Live session started, it answered out loud, interrupting it
 stopped playback immediately, it wrote a summary of the conversation to SQLite,
 the interaction timed out on its own, and after a restart it still knew what had
 been said.
 
-The model can also act. Gemini requests a tool, Tool System validates the
-arguments, consults policy, applies its guards, and launches the process through
-a broker that accepts an argv array and has no shell entry point. A denied tool
+The model can also act. In the Mark I default composition, Gemini discovers the
+safe read-only `get_time`, `calculate`, `uptime`, and `system_status` tools;
+Tool System validates the arguments, consults policy, applies its guards, and
+returns the result to the realtime session. The default tool path was exercised
+on hardware with time, system-status, and multi-step calculation requests.
+Side-effecting tools such as `open_app` remain explicit opt-ins. A denied tool
 reaches nothing, a hallucinated argument is rejected before any launch, an
 approval flag invented by the model is an undeclared argument rather than a
 permission, and content returned from outside is labelled as data rather than
@@ -171,9 +174,9 @@ instruction. Every one of those is a test, not an intention.
 Every core is also verified automatically on each push, and the meta-repository
 builds them all and re-runs the composed slice.
 
-Not yet verified on hardware: the modular Scribe → Intelligence → Voice path,
-and the tool loop above. Every hardware result came from the native realtime
-path; the tool loop is verified end to end against a scripted provider.
+Not yet verified on hardware: the modular Scribe → Intelligence → Voice path.
+The native realtime tool loop is hardware-verified for the safe default
+catalogue; the explicit `open_app` process-launch probe remains separate.
 
 Each core repository documents its own verified state and known limitations in its
 `README.md` and `PROGRESS.md`.

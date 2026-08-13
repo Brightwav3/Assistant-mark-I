@@ -1,6 +1,6 @@
 # Realtime Tools and Audio Boundary Design
 
-**Status:** Design for review
+**Status:** Implemented and verified
 
 **Date:** 2026-08-13
 
@@ -9,8 +9,9 @@
 Add the smallest Mark I vertical connection between the existing Tool System
 and the native realtime conversation path while making microphone framing and
 latency diagnostics consistent. Realtime Core remains provider-independent,
-Assistant Runtime remains the only cross-core coordinator, and no host tool is
-enabled by default merely because this integration exists.
+Assistant Runtime remains the only cross-core coordinator, and no side-effecting
+host tool is enabled by default merely because this integration exists. The
+production composition does expose a safe read-only catalogue.
 
 ## Scope
 
@@ -18,8 +19,9 @@ enabled by default merely because this integration exists.
    tool result submission method.
 2. Translate those contracts inside the Gemini adapter using the Live API's
    function declaration, tool call, and function response messages.
-3. Let `RealtimeCoreAdapter` discover and execute tools through an injected
-   runtime-owned `RealtimeToolExecutor`.
+3. Let `RealtimeCoreAdapter` discover and execute tools through a
+   runtime-owned `RealtimeToolExecutor`; the production composition supplies
+   the safe read-only Host Tools catalogue through that same boundary.
 4. Add a Tool System-backed executor adapter without duplicating validation,
    policy, guards, broker access, or outcome classification.
 5. Standardize microphone input at 16 kHz, mono, PCM16, 20 ms frames and bound
@@ -32,8 +34,9 @@ enabled by default merely because this integration exists.
 
 - Realtime Core does not import `tool-system`, `host-tools`, or any model
   contract.
-- `createAssistantRuntime()` does not silently construct or enable an
-  `open_app` capability. A caller must inject a `RealtimeToolExecutor`.
+- `createAssistantRuntime()` does not silently construct or enable a
+  side-effecting `open_app` capability. A caller must inject a
+  `RealtimeToolExecutor` for that class of capability.
 - No native audio backend, `DuplexAudioDevice`, AEC, DSP stack, WebRTC,
   Interaction Core, or playback-controller consolidation is part of this
   change.
@@ -57,8 +60,11 @@ The public contract uses a standard JSON Schema object in
 Owns `RealtimeToolExecutor`, tool discovery/execution orchestration, audio
 frameization, bounded pending input, activity policy, and trace aggregation.
 `ToolSystemRealtimeToolExecutor` maps the existing `ToolRuntime` declarations
-and reports back its typed outcomes. All validation, policy, guards, broker
-access, taint handling, and error classification remain in Tool System.
+and reports back its typed outcomes. Production composition installs the safe
+read-only `get_time`, `calculate`, `uptime`, and `system_status` catalogue;
+callers can replace it with an explicitly configured runtime. All validation,
+policy, guards, broker access, taint handling, and error classification remain
+in Tool System.
 
 ### Root meta-repository
 
@@ -217,12 +223,17 @@ only through the existing Tool System outcome rendering rules.
 
 ### Manual hardware smoke
 
-The repository will document a probe that injects a Tool Runtime whose
+The repository documents a probe that injects a Tool Runtime whose
 `open_app` catalog maps `calculator` to the local Calculator executable and
 whose process broker is explicitly allowlisted. The operator starts it only
 with `GEMINI_API_KEY` in the current process environment, says “Open
 Calculator”, and verifies the process launch plus the spoken response. This
 path is not part of the offline test suite and is not enabled by default.
+
+The safe default catalogue was verified separately on real hardware on
+2026-08-13: Gemini discovered and executed `get_time`, `system_status`, and
+`calculate`, and spoke the resulting answer. The `open_app` probe remains
+explicit and was not included in that Mark I run.
 
 ## Definition of done for this design
 
