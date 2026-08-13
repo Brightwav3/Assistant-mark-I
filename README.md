@@ -1,5 +1,9 @@
 # Assistant mark I
 
+[![Integration](https://github.com/Brightwav3/Assistant-mark-I/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Brightwav3/Assistant-mark-I/actions/workflows/ci.yml)
+[![License: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-4c1d95)](https://polyformproject.org/licenses/noncommercial/1.0.0/)
+[![Architecture: git submodules](https://img.shields.io/badge/Architecture-git%20submodules-6f42c1)](https://git-scm.com/book/en/v2/Git-Tools-Submodules)
+
 Infrastructure for a persistent, ambient, model-independent personal assistant.
 
 This is the meta-repository. It contains the manifesto and every core linked as a
