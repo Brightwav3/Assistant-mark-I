@@ -49,6 +49,41 @@ displays, and devices are independent ways to reach the same system. Lifecycle,
 validation, storage, permissions, and safety stay deterministic and belong to the
 platform, not to whatever model is currently plugged in.
 
+## The full-duplex problem
+
+The native realtime path is intentionally a foundation for full-duplex, not a
+full-duplex assistant yet. [full-duplex-attempts](https://github.com/Brightwav3/full-duplex-attempts)
+records the experiments, criteria, and limitations behind that distinction.
+
+`Assistant-mark-I` currently runs a native bidirectional audio session through
+Gemini Live. That solves the media plumbing, but Gemini Live is still a
+generation-2, turn-based model: it waits for the user to stop before responding
+and cannot backchannel while the user is speaking. This is a model limitation,
+not a missing state transition or a silence timer that can be tuned away. True
+full-duplex requires a [generation-3 model](https://github.com/Brightwav3/full-duplex-attempts/blob/main/docs/what-full-duplex-requires.md)
+that can continuously process both directions and decide when to speak.
+
+The current architecture also has two internal gaps that are independent of model availability:
+
+- **No native realtime tool path.** `RealtimeSessionConfig` has no tool
+  declaration and `RealtimeSpeechEvent` has no tool-call event, so the Tool
+  System and Host Tools catalogue are unreachable from the native session. The
+  assistant can converse through that path, but cannot act through it yet.
+- **No shared acoustic signal path.** Scribe Core owns capture and Realtime Core
+  owns playback, deliberately as independent repositories. Acoustic echo
+  cancellation needs both signals on one timeline, so the current decomposition
+  gives AEC nowhere to live while the microphone stays open during playback.
+
+This is why the problem is not one missing feature. The model sets the ceiling;
+the application still has to provide delegation, cancellation, and an audio
+boundary that can handle echo. The intended outcome is to solve the internal gaps
+now and keep the provider contract stable so a real generation-3 model can be
+added later without rebuilding the assistant around it.
+
+See [the Assistant mark I attempt](https://github.com/Brightwav3/full-duplex-attempts/blob/main/docs/attempts/assistant-mark-i.md)
+for the dated criteria and three walls, and [the full-duplex attempts repository](https://github.com/Brightwav3/full-duplex-attempts)
+for the comparison with the cascade attempt.
+
 ## Repository map
 
 Every directory below is a git submodule pointing at a standalone repository.
