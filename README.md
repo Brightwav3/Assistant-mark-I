@@ -1,5 +1,9 @@
 # Assistant mark I
 
+[![Integration](https://github.com/Brightwav3/Assistant-mark-I/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Brightwav3/Assistant-mark-I/actions/workflows/ci.yml)
+[![License: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-4c1d95)](https://polyformproject.org/licenses/noncommercial/1.0.0/)
+[![Architecture: git submodules](https://img.shields.io/badge/Architecture-git%20submodules-6f42c1)](https://git-scm.com/book/en/v2/Git-Tools-Submodules)
+
 Infrastructure for a persistent, ambient, model-independent personal assistant.
 
 This is the meta-repository. It contains the manifesto and every core linked as a
@@ -44,6 +48,44 @@ The assistant is larger than its interface. The model is a component. Voice, tex
 displays, and devices are independent ways to reach the same system. Lifecycle,
 validation, storage, permissions, and safety stay deterministic and belong to the
 platform, not to whatever model is currently plugged in.
+
+## The full-duplex problem
+
+The native realtime path is intentionally a foundation for full-duplex, not a
+full-duplex assistant yet. [full-duplex-attempts](https://github.com/Brightwav3/full-duplex-attempts)
+records the experiments, criteria, and limitations behind that distinction.
+
+`Assistant-mark-I` currently runs a native bidirectional audio session through
+Gemini Live. That solves the media plumbing, but Gemini Live is still a
+generation-2, turn-based model: it waits for the user to stop before responding
+and cannot backchannel while the user is speaking. This is a model limitation,
+not a missing state transition or a silence timer that can be tuned away. True
+full-duplex requires a [generation-3 model](https://github.com/Brightwav3/full-duplex-attempts/blob/main/docs/what-full-duplex-requires.md)
+that can continuously process both directions and decide when to speak.
+
+The current architecture still has one major internal gap that is independent of
+model availability, while the tool path is now bounded and verified:
+
+- **Bounded native realtime tool path.** `RealtimeSessionConfig` declares the
+  active safe catalogue and `RealtimeSpeechEvent` carries correlated tool
+  requests. The Tool System validates arguments, applies policy, executes the
+  Host Tools catalogue, and returns the result to the native session. The
+  default read-only path is hardware-verified; side-effecting tools such as
+  `open_app` remain explicit opt-ins.
+- **No shared acoustic signal path.** Scribe Core owns capture and Realtime Core
+  owns playback, deliberately as independent repositories. Acoustic echo
+  cancellation needs both signals on one timeline, so the current decomposition
+  gives AEC nowhere to live while the microphone stays open during playback.
+
+This is why the problem is not one missing feature. The model sets the ceiling;
+the application still has to provide delegation, cancellation, and an audio
+boundary that can handle echo. The intended outcome is to solve the internal gaps
+now and keep the provider contract stable so a real generation-3 model can be
+added later without rebuilding the assistant around it.
+
+See [the Assistant mark I attempt](https://github.com/Brightwav3/full-duplex-attempts/blob/main/docs/attempts/assistant-mark-i.md)
+for the dated criteria and three walls, and [the full-duplex attempts repository](https://github.com/Brightwav3/full-duplex-attempts)
+for the comparison with the cascade attempt.
 
 ## Repository map
 
