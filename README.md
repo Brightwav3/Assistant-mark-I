@@ -1,3 +1,14 @@
+## Status: Mark I complete — proof of concept
+
+Assistant-mark-I is a completed meta-repository proof of concept. It proves on
+real Windows hardware that the native Gemini Live path, interruption, memory,
+bounded safe tools, and independent-core composition can work together.
+
+This is a proof of the architecture, not a production-ready full-duplex
+assistant. Mark II focuses on intelligence, delegation, serious tools, and
+mature half-duplex interaction. Native full duplex, semantic timing, overlap,
+backchannels, and continuous listening belong to Mark III.
+
 # Assistant mark I
 
 [![Integration](https://github.com/Brightwav3/Assistant-mark-I/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Brightwav3/Assistant-mark-I/actions/workflows/ci.yml)
