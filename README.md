@@ -98,6 +98,12 @@ See [the Assistant mark I attempt](https://github.com/Brightwav3/full-duplex-att
 for the dated criteria and three walls, and [the full-duplex attempts repository](https://github.com/Brightwav3/full-duplex-attempts)
 for the comparison with the cascade attempt.
 
+### Native runtime path
+
+<p align="center">
+  <img src="./docs/images/mark-i-runtime-path.png" width="960" alt="Assistant Mark I native runtime path" />
+</p>
+
 ## Repository map
 
 Every directory below is a git submodule pointing at a standalone repository.
