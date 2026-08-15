@@ -101,7 +101,7 @@ for the comparison with the cascade attempt.
 ### Native runtime path
 
 <p align="center">
-  <img src="./docs/images/mark-i-runtime-path.png" width="960" alt="Assistant Mark I native runtime path" />
+  <img src="https://raw.githubusercontent.com/Brightwav3/Assistant-mark-I/main/docs/images/mark-i-runtime-path.png" width="960" alt="Assistant Mark I native runtime path" />
 </p>
 
 ## Repository map
